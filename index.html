@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="띠별 오늘의 무료 운세를 간편하게 확인하세요. 누구나 쉽게 볼 수 있는 운세 서비스입니다." />
+  <meta name="keywords" content="띠별운세, 무료운세, 오늘의 운세, 띠별 오늘의 운세" />
+  <meta name="author" content="ChoccoJang">
+  <meta name="theme-color" content="#b92c2c">
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="여기에 구글 인증 코드" />
+  <link rel="canonical" href="https://choccojang.github.io/portfolio/happyday/" />
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/616/616519.png" type="image/png">
+  <title>Happy Day - 오늘의 띠별 운세 - 🐭🐂🐯🐰🐲🐍🐎🐑🐒🐓🐶🐷
+  </title>
+  <style>
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #fffaf5;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #b92c2c;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    header h1 {
+        font-size: 20px;
+        margin: 0;
+    }
+    header .date {
+        font-size: 14px;
+    }
+    .tagline {
+      text-align: center;
+      font-size: 18px;
+      color: #d46c00;
+      margin: 10px 0;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        background-color: #eee;
+        padding: 10px;
+        gap: 10px;
+    }
+    .nav button {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .nav button.active {
+        background-color:#b92c2c;
+        color:white;
+    }
+    .zodiac-icons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 20px;
+        gap: 10px;
+    }
+    .zodiac-icons span {
+        font-size: 30px;
+        cursor: pointer;
+        padding: 0px 3px 5px 3px;
+    }
+    .zodiac-icons span.active {
+        text-shadow: 3px 4px 5px #b92c2c;
+    }
+    .fortune-box {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0px;
+    }
+    .fortune-box h2 {
+        color: #d46c00;
+        margin: 0;
+    }
+    .fortune-item {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        padding: 15px;
+    }
+    .fortune-item span.year {
+        font-weight: bold;
+        color: #333;
+    }
+    #loading-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid #fff;
+        border-top-color: #b92c2c;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 600px) {
+    .nav button {
+        flex: 1 1 auto;
+        padding: 10px;
+        font-size: 14px;
+    }
+    .fortune-item {
+        font-size: 15px;
+    }
+    .fortune-box {
+        padding: 10px;
+    }
+    .zodiac-icons img {
+        width: 40px;
+        height: 40px;
+    }
+    }
+  </style>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MG8RMPKK');</script>
+<!-- End Google Tag Manager -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 어제/오늘/내일 운세 버튼
+        const btns = document.querySelectorAll('.nav button')
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btns.forEach(b => b.classList.remove('active'))
+                btn.classList.add('active')
+                updateContents()
+            })
+        })
+
+        // 띠 클릭
+        const icons = document.querySelectorAll('.zodiac-icons span');
+        icons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                icons.forEach(i => i.classList.remove('active'))
+                icon.classList.add('active')
+                updateContents()
+            })
+        })
+        updateContents()
+    })
+
+    function onOffOveray(isShow) {
+        const overlay = document.getElementById('loading-overlay')
+        if (overlay) {
+            if (isShow) {
+                overlay.style.display = 'flex'
+            } else {
+                overlay.style.display = 'none'
+            }
+        }
+    }
+    
+    async function updateContents() {
+        const activeBtn = document.querySelector('.nav button.active')
+        const activeIcon = document.querySelector('.zodiac-icons span.active')
+        if (activeBtn && activeIcon) {
+            onOffOveray(true)
+            // 날짜, 띠 번호
+            const day = activeBtn.getAttribute("data-num")
+            const ji = activeIcon.getAttribute("data-num")
+            
+            // API 호출
+            const res = await fetch('https://proxy-api-six-tau.vercel.app/api/proxy/euckr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;'
+                },
+                body: new URLSearchParams({
+                    u: 'https://fortune.nate.com/contents/freeunse/dayjiji.nate',
+                    jijiPage: '0',
+                    jijiparam: ji,
+                    dateparam: day
+                })
+            }).then(res => res.arrayBuffer())
+            .then(resBuffer => {
+
+                // 변경 할 ui
+                const fortuneBox = document.querySelector('.fortune-box')     // 운세 박스
+                const title = fortuneBox.querySelector('h2')     // 타이틀
+                const paragraph = fortuneBox.querySelector('p')  // 전체 요약
+
+                // 데이터 파싱
+                const parser = new DOMParser()
+                const encodeText = new TextDecoder('euc-kr').decode(resBuffer)
+                const doc = parser.parseFromString(encodeText, 'text/html')
+
+                // -- 전체 요약
+                const resParagraph = doc.querySelector('#con_txt')?.textContent.trim();
+                // -- 년도별 테이블
+                const resTables = doc.querySelectorAll('#year_box table')
+                // -- 오늘 일자
+                const today = doc.querySelector('#contents strong.date').textContent.trim()
+                
+                // UI 갱신
+                // -- 오늘일자
+                document.querySelector("#today").textContent = today
+                // -- 타이틀
+                title.textContent = `${activeIcon.title} 운세`
+                // -- 전체 요약
+                paragraph.textContent = resParagraph
+
+                // -- 년도별 내용
+                // -- 년도별 내용 초기화
+                const fortuneItems = fortuneBox.querySelectorAll('.fortune-item').forEach(item => item.remove())
+                resTables.forEach((table, index) => {
+                    const yearEl = table.querySelector('td.year')
+                    const todayEl = table.querySelector('td.today_year_td02')
+                    const yearText = yearEl ? yearEl.textContent.trim() : false
+                    const todayText = todayEl ? todayEl.textContent.trim() : false
+                    if (yearText && todayText) {
+                        fortuneBox.insertAdjacentHTML('beforeend', `<div class="fortune-item"><span class="year">${yearText}</span> - ${todayText}</div>`)
+                    }
+                })
+                onOffOveray(false)
+            }).catch((e) => {
+                console.error(e)
+                onOffOveray(false)
+            })
+        }
+    }
+  </script>
+</head>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MG8RMPKK"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<body>
+    <div id="loading-overlay"><div class="spinner"></div></div>
+    <header>
+        <h1>오늘의 띠별 운세</h1>
+        <div id="today" class="date"></div>
+    </header>
+    <div class="tagline">오늘의 띠별 운세로 기분 좋은 하루를 시작하세요 🌞</div>
+
+    <div class="nav">
+        <button data-num="2">어제운세</button>
+        <button data-num="0" class="active">오늘운세</button>
+        <button data-num="1">내일운세</button>
+    </div>
+
+    <div class="zodiac-icons">
+        <span class="active" data-num="00" title="쥐띠">🐭</span>
+        <span data-num="01" title="소띠">🐂</span>
+        <span data-num="02" title="호랑이띠">🐯</span>
+        <span data-num="03" title="토끼띠">🐰</span>
+        <span data-num="04" title="용띠">🐲</span>
+        <span data-num="05" title="뱀띠">🐍</span>
+        <span data-num="06" title="말띠">🐎</span>
+        <span data-num="07" title="양띠">🐑</span>
+        <span data-num="08" title="원숭이띠">🐒</span>
+        <span data-num="09" title="닭띠">🐓</span>
+        <span data-num="10" title="개띠">🐶</span>
+        <span data-num="11" title="돼지띠">🐷</span>
+    </div>
+
+    <div class="fortune-box">
+        <h2></h2>
+        <p></p>
+    </div>
+</body>
+</html>
