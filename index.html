@@ -203,13 +203,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             const ji = activeIcon.getAttribute("data-num")
             
             // API 호출
-            const res = await fetch('https://proxy-api-six-tau.vercel.app/api/proxy/euckr', {
+            const res = await fetch('https://proxy-api-six-tau.vercel.app/api/proxy/fortune', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;'
                 },
                 body: new URLSearchParams({
-                    u: 'https://fortune.nate.com/contents/freeunse/dayjiji.nate',
                     jijiPage: '0',
                     jijiparam: ji,
                     dateparam: day
