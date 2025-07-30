@@ -1,10 +1,10 @@
 const CACHE_NAME = 'happyday-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  'https://choccojang.github.io/happyday',
+  'https://choccojang.github.io/happyday/index.html',
+  'https://choccojang.github.io/happyday/manifest.json',
+  'https://choccojang.github.io/happyday/icons/icon-192.png',
+  'https://choccojang.github.io/happyday/icons/icon-512.png'
 ];
 
 // 설치 시 캐시
