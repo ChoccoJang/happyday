@@ -31,6 +31,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: sticky;
+        top: 0;
     }
     header h1 {
         font-size: 20px;
@@ -90,13 +92,15 @@
     .fortune-item {
         background-color: #fff;
         border: 1px solid #ddd;
-        border-radius: 6px;
+        border-radius: 10px;
         margin-bottom: 10px;
         padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        color: #555;
     }
     .fortune-item span.year {
         font-weight: bold;
-        color: #333;
+        color: #222;
     }
     #loading-overlay {
         position: fixed;
