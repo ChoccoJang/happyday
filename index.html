@@ -142,6 +142,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-MG8RMPKK');</script>
 <!-- End Google Tag Manager -->
   <script>
+    
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(function (registration) {
+          console.log('ServiceWorker registered:', registration.scope);
+        }, function (err) {
+          console.log('ServiceWorker registration failed:', err);
+        });
+    });
+  }
+    
     document.addEventListener("DOMContentLoaded", function() {
         // 어제/오늘/내일 운세 버튼
         const btns = document.querySelectorAll('.nav button')
