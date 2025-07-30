@@ -1,6 +1,6 @@
 {
-  "name": "Happy Day - 띠별 운세",
-  "short_name": "HappyDay",
+  "name": "오늘의 띠별운세",
+  "short_name": "오늘의 띠별운세",
   "start_url": "https://choccojang.github.io/happyday",
   "display": "standalone",
   "background_color": "#fffaf5",
